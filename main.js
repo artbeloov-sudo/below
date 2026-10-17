@@ -89,6 +89,9 @@ var BELOV_BASE=(document.currentScript&&document.currentScript.src||'').replace(
   var io=new IntersectionObserver(function(en){en.forEach(function(e){if(!e.isIntersecting)return;var el=e.target;el.classList.add('in');io.unobserve(el);
    setTimeout(function(){el.classList.remove('rv','in');el.style.removeProperty('--rd')},1800)})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
   els.forEach(function(el){var sib=Array.prototype.indexOf.call(el.parentNode.children,el);el.classList.add('rv');el.style.setProperty('--rd',(sib%4*100)+'ms');io.observe(el)});
+  // запасная проверка: если IntersectionObserver не сработал (Safari, Tilda), показываем по положению на экране
+  function rvc(){els.forEach(function(el){if(!el.classList.contains('rv')||el.classList.contains('in'))return;if(el.getBoundingClientRect().top<innerHeight*.94){el.classList.add('in');io.unobserve(el);setTimeout(function(){el.classList.remove('rv','in');el.style.removeProperty('--rd')},1800)}})}
+  addEventListener('scroll',rvc,{passive:true});addEventListener('resize',rvc);setInterval(rvc,600);
  }
  // video: play only when visible
  var cat=document.getElementById('cat');
